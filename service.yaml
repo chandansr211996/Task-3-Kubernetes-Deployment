@@ -1,0 +1,33 @@
+yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app-service
+spec:
+  selector:
+    app: python-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: ClusterIP
+#### **Ingress**
+Create an ingress.yaml file (ensure you have an Ingress controller installed, e.g., NGINX Ingress):yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: python-app-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: python-app.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: python-app-service
+                port:
+                  number: 80
